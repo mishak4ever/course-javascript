@@ -20,10 +20,10 @@
         const newDiv = document.createElement('div');
         var maxHeight = 400,
             maxWidth = 400;
-        var width = Math.floor(Math.random() * maxHeight) + 50,
-            height = Math.floor(Math.random() * maxWidth) + 50;
-        newDiv.style.left = Math.floor(Math.random() * window.innerWidth - newDiv.style.width) + 'px';
-        newDiv.style.top = Math.floor(Math.random() * window.innerHeight - newDiv.style.height) + 'px';
+        var width = Math.floor(Math.random() * maxWidth) + 50,
+            height = Math.floor(Math.random() * maxHeight) + 50;
+        newDiv.style.left = Math.abs(Math.floor(Math.random() * window.innerWidth - width)) + 'px';
+        newDiv.style.top = Math.abs(Math.floor(Math.random() * window.innerHeight - height)) + 'px';
         newDiv.style.width = width + 'px';
         newDiv.style.height = height + 'px';
         newDiv.style.backgroundColor = `rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`;
