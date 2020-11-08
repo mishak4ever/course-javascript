@@ -18,12 +18,12 @@
 
     function createDiv() {
         const newDiv = document.createElement('div');
-        var docHeight = window.innerHeight,
-            docWidth = window.innerWidth;
-        var width = Math.floor(Math.random() * docHeight),
-            height = Math.floor(Math.random() * docWidth);
-        newDiv.style.left = Math.floor(Math.random() * docWidth - newDiv.style.width) + 'px';
-        newDiv.style.top = Math.floor(Math.random() * docHeight - newDiv.style.height) + 'px';
+        var maxHeight = 400,
+            maxWidth = 400;
+        var width = Math.floor(Math.random() * maxHeight) + 50,
+            height = Math.floor(Math.random() * maxWidth) + 50;
+        newDiv.style.left = Math.floor(Math.random() * maxWidth - newDiv.style.width) + 'px';
+        newDiv.style.top = Math.floor(Math.random() * maxHeight - newDiv.style.height) + 'px';
         newDiv.style.width = width + 'px';
         newDiv.style.height = height + 'px';
         newDiv.style.backgroundColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
@@ -41,9 +41,12 @@
             };
 
             function MouseMove(event) {
+                console.log(event);
                 newDiv.style.left = event.pageX - shiftX + 'px';
                 newDiv.style.top = event.pageY - shiftY + 'px';
             };
+
+
         };
 
         newDiv.ondragstart = function () {
@@ -53,6 +56,12 @@
         homeworkContainer.appendChild(newDiv);
     }
 
+    /*
+    function MouseMove(event,div,startX,StartY) {
+        div.style.left = event.pageX - startX + 'px';
+        div.style.top = event.pageY - StartY + 'px';
+    };
+*/
     const addDivButton = homeworkContainer.querySelector('#addDiv');
 
     addDivButton.addEventListener('click', () => createDiv());
