@@ -22,11 +22,11 @@
             maxWidth = 400;
         var width = Math.floor(Math.random() * maxHeight) + 50,
             height = Math.floor(Math.random() * maxWidth) + 50;
-        newDiv.style.left = Math.floor(Math.random() * maxWidth - newDiv.style.width) + 'px';
-        newDiv.style.top = Math.floor(Math.random() * maxHeight - newDiv.style.height) + 'px';
+        newDiv.style.left = Math.floor(Math.random() * window.innerWidth - newDiv.style.width) + 'px';
+        newDiv.style.top = Math.floor(Math.random() * window.innerHeight - newDiv.style.height) + 'px';
         newDiv.style.width = width + 'px';
         newDiv.style.height = height + 'px';
-        newDiv.style.backgroundColor = '#' + Math.floor(Math.random() * 16777215).toString(16);
+        newDiv.style.backgroundColor = `rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`;
         newDiv.textContent = 'Новый Div: ' + newDiv.style.width + '*' + newDiv.style.height;
         newDiv.classList.add('draggable-div');
         newDiv.onmousedown = function (event) {
