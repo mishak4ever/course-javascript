@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        .draggable-div {
+            position: absolute;
+        }
+    </style>
+</head>
+<body>
+<div id="app">
+    <button id="addDiv">добавить div</button>
+</div>
+<script>
+    const homeworkContainer = document.querySelector('#app');
+
+    function createDiv() {
+        const newDiv = document.createElement('div');
+        var maxHeight = 400,
+            maxWidth = 400;
+        var width = Math.floor(Math.random() * maxWidth) + 50,
+            height = Math.floor(Math.random() * maxHeight) + 50;
+        newDiv.style.left = Math.abs(Math.floor(Math.random() * window.innerWidth - width)) + 'px';
+        newDiv.style.top = Math.abs(Math.floor(Math.random() * window.innerHeight - height)) + 'px';
+        newDiv.style.width = width + 'px';
+        newDiv.style.height = height + 'px';
+        newDiv.style.backgroundColor = `rgb(${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)},${Math.floor(Math.random() * 255)})`;
+        newDiv.textContent = 'Новый Div: ' + newDiv.style.width + '*' + newDiv.style.height;
+        newDiv.classList.add('draggable-div');
+        newDiv.onmousedown = function (event) {
+            newDiv.style.zIndex = 1000;
+            let shiftX = event.clientX - newDiv.getBoundingClientRect().left;
+            let shiftY = event.clientY - newDiv.getBoundingClientRect().top;
+
+            newDiv.addEventListener('mousemove', MouseMove)
+            newDiv.onmouseup = function () {
+                newDiv.removeEventListener('mousemove', MouseMove);
+                newDiv.onmouseup = null;
+            };
+
+            function MouseMove(event) {
+                console.log(event);
+                newDiv.style.left = event.pageX - shiftX + 'px';
+                newDiv.style.top = event.pageY - shiftY + 'px';
+            };
+
+
+        };
+
+        newDiv.ondragstart = function () {
+            return false;
+        };
+
+        homeworkContainer.appendChild(newDiv);
+    }
+
+    /*
+    function MouseMove(event,div,startX,StartY) {
+        div.style.left = event.pageX - startX + 'px';
+        div.style.top = event.pageY - StartY + 'px';
+    };
+*/
+    const addDivButton = homeworkContainer.querySelector('#addDiv');
+
+    addDivButton.addEventListener('click', () => createDiv());
+
+</script>
+</body>
+</html>
