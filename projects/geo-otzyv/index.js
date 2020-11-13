@@ -14,10 +14,10 @@ class YandexMap {
             center: [55.76, 37.64],
             zoom: 10,
         });
-
+        var that = this;
         this.YMap.events.add('click', function (e) {
-                var coords = e.get('coords');
-                this.onClick(coords)
+            var coords = e.get('coords');
+            that.onClick.bind(that, coords)
             // if (!this.YMap.balloon.isOpen()) {
             //     var coords = e.get('coords');
             //     this.onClick(coords)
@@ -26,7 +26,6 @@ class YandexMap {
             // }
         });
     }
-
 
     openBalloon(coords, content) {
         this.YMap.balloon.open(coords, content);
