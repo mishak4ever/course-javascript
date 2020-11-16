@@ -110,7 +110,7 @@ class YandexMap {
                 this.createPlacemark(coords);
                 this.closeBalloon();
             } catch (e) {
-                var formError, input;
+                var formError;
                 switch (e.message) {
                     case "empty_name":
                         formError = document.querySelector('#span-name');
@@ -147,11 +147,14 @@ class YandexMap {
     }
 
     deletePlacemark(coords) {
-        // console.log(this.YMap.geoObjects);
-        var myPlacemark = new ymaps.Placemark(coords);
-        this.YMap.geoObjects.remove(myPlacemark)
-        // this.clusterer.remove(myPlacemark);
+        const geoObjects = this.clusterer.getGeoObjects()
+        const geoObject = geoObjects.find(object => {
+            const currentCoords = JSON.stringify(object.geometry.getCoordinates())
+            const targetCoords = JSON.stringify(coords)
+            if (currentCoords === targetCoords) {
+                return object
+            }
+        })
+        this.clusterer.remove(geoObject);
     }
-
-
 }
