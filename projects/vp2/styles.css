@@ -1,0 +1,152 @@
+body {
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.login-btn {
+    background-color: #5288c1;
+    color: white;
+    padding: 12px 16px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 120px;
+}
+
+
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 200px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0); /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4); /* Black w/ opacity */
+}
+
+
+.modal-content {
+    position: relative;
+    background-color: #17212b;
+    margin: auto;
+    padding: 0;
+    border: 5px solid #17212b;
+    width: 20%;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+
+.close {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #17212b;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-body {
+    padding: 2px 16px;
+    color: #637384;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.field {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.field input {
+    padding: 2px 16px;
+    color: white;
+    font-size: 14pt;
+    border-top-width: 0px;
+    border-right-width: 0px;
+    border-left-width: 0px;
+    border-bottom-width: 1px;
+    border-bottom-color: solid #5288c1;
+    background: transparent;
+}
+
+.field input::-moz-placeholder {
+    color: #858e97; /* Цвет подсказывающего текста */
+}
+
+.field input:focus {
+    outline: none;
+}
+
+.modal-body p {
+    color: #637384;
+}
+
+.modal-body h3 {
+    color: white;
+}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #17212b;
+    color: white;
+}
+
+.logo {
+    background-color: #242f3d;
+    border-radius: 50%;
+    overflow: hidden;
+    height: 10em;
+    width: 10em;
+    /*background-image: url(/images/braineater.png);*/
+    /*background-repeat: no-repeat;*/
+    /*left: 50%;*/
+    /*display: flex;*/
+    /*align-items: center;*/
+    /*justify-content: center;*/
+}

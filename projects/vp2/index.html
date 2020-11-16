@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="styles.css" rel="stylesheet">
+</head>
+<body>
+
+<button id="logout-btn">Выйти из чата</button>
+
+
+<div id="login-form" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="modal-header">
+            <div class="logo"></div>
+        </div>
+        <div class="modal-body">
+            <div class="form" data-role="review-form">
+                <h3>Авторизация</h3>
+                <p>Введите свое фио и ник</p>
+                <p> для дальнейшей авторизации</p>
+                <br>
+                <div class="field">
+                    <input id="name" data-role="user-name" type="text" placeholder="Фамилия имя">
+                    <span id="span-name" class="form-error"></span>
+                </div>
+                <div class="field">
+                    <input id="nick" data-role="user-nick" type="text" placeholder="Ник">
+                    <span id="span-place" class="form-error"></span>
+                </div>
+
+                <button id="login-btn"  class="login-btn" data-role="review-add">Войти</button>
+                <span id="span-common" class="form-error">&NonBreakingSpace;</span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <!--            <h3>Футер модального окна</h3>-->
+        </div>
+    </div>
+
+</div>
+</body>
+</html>
+<script src="login.js"></script>
+<script src="index.js"></script>
