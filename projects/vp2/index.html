@@ -7,20 +7,42 @@
 </head>
 <body>
 
-<button id="logout-btn">Выйти из чата</button>
+<div class="wrapper">
+    <!--    <div class="header"></div>-->
+    <div class="sidebar ">
+        <section id="user_section" class="user-section">
+        <button id="logout-btn">Выйти из чата</button>
+        <h4>Список пользователей в чате:</h4>
+        </section>
+    </div>
+    <div class="chat-content">
+        <section id="chat_section" class="chat">
 
+        </section>
+    </div>
+    <div class="footer">
+        <div class="footer-text">
+            <input id="message_input" type="text" placeholder="Ведите сообщение">
+        </div>
+        <div class="footer-btn">
+            <button id="send_btn" class="send-btn">Отправить</button>
+        </div>
+    </div>
+
+    <button id="login-btn" class="login-btn" data-role="review-add">Войти</button>
+</div>
+</div>
 
 <div id="login-form" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
         <div class="modal-header">
             <div class="logo"></div>
         </div>
         <div class="modal-body">
             <div class="form" data-role="review-form">
                 <h3>Авторизация</h3>
-                <p>Введите свое фио и ник</p>
-                <p> для дальнейшей авторизации</p>
+                <p>Введите свое Имя и Ник</p>
+                <p> для использования в чате</p>
                 <br>
                 <div class="field">
                     <input id="name" data-role="user-name" type="text" placeholder="Фамилия имя">
@@ -31,7 +53,7 @@
                     <span id="span-place" class="form-error"></span>
                 </div>
 
-                <button id="login-btn"  class="login-btn" data-role="review-add">Войти</button>
+                <button id="login-btn" class="login-btn" data-role="review-add">Войти</button>
                 <span id="span-common" class="form-error">&NonBreakingSpace;</span>
             </div>
         </div>
@@ -42,6 +64,38 @@
 
 </div>
 </body>
+<script type="template" id="user_block">
+    <div class="block_user" data-user="{{usernick}}">
+        <div>
+            <img src="images/no_photo.jpg" class="avatar-pic" data-user="{{usernick}}">
+        </div>
+        <div class="title">
+            <span>{{usernick}}</span>
+        </div>
+    </div>
+</script><script type="template" id="system-message">
+    <div class="message message-system">
+        <time class="message-time">{{time}}</time>
+        <div class="message--text">
+            <p>{{message}}</p>
+        </div>
+    </div>
+</script>
+<script type="template" id="message">
+    <div class="message message-user-{{direction}}">
+        <time class="message-time">{{time}}</time>
+        <div class="message-author-pic">
+            <img src="{{imgsrc}}" class="avatar-pic" data-user="{{usernick}}">
+        </div>
+        <div class="message-text">
+            <p class="user-title">{{usernick}}</p>
+            <p>{{message}}</p>
+        </div>
+    </div>
+</script>
 </html>
+<script src="https://cdn.jsdelivr.net/npm/handlebars@latest/dist/handlebars.js"></script>
+<script src="websocket.js"></script>
+<script src="chat.js"></script>
 <script src="login.js"></script>
 <script src="index.js"></script>
