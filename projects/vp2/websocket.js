@@ -1,8 +1,7 @@
 class WS {
     constructor(fn) {
             // заменить на свой адрес сервера
-            this.socket = new WebSocket("ws://amblogic.ru:8000");
-//            this.socket = new WebSocket("ws://localhost:8000");
+            this.socket = new WebSocket("ws://localhost:8000");
             if (!this.socket) {
                 throw new Error("Ошибка подключения к серверу");
             }
