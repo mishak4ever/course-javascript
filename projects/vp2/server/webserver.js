@@ -14,6 +14,7 @@ webSocketServer.on('connection', function (ws) {
     ws.on('message', function (message) {
         console.log('message received ' + message);
         var received = JSON.parse(message);
+        // определяем тип сообщения
         switch (received.type) {
             case "avatar":
                 storage.saveUser(received)
@@ -24,13 +25,15 @@ webSocketServer.on('connection', function (ws) {
                 return;
                 break;
             case "login":
+                // ищем аватар пользователя, если он существует
                 var user_avatar = storage.getUser(received);
                 if (user_avatar) {
-                    console.log('found_avatar', user_avatar);
+                    console.log('found_avatar',received.user);
                     received.avatar = user_avatar;
                 }
                 break;
             case "message":
+                // ищем аватар пользователя, если он существует
                 var user_avatar = storage.getUser(received);
                 if (user_avatar)
                     received.avatar = user_avatar;

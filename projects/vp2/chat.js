@@ -15,14 +15,19 @@ class Chat {
 
     async init() {
         // инициализация обработчиков
-        this.socket = await new WS((data) => {
-            this.handleMessage(data)
-        });
+        try {
+            this.socket = await new WS((data) => {
+                this.handleMessage(data)
+            });
+        } catch (e) {
+            alert( "Ошибка подключения к серверу " + e ); 
+        }
+
         this.sendbtn.addEventListener('click', () => this.sendMessage());
         this.textinput.addEventListener('keydown', (event) => {
-            if (event.key == "Enter")
-                this.sendMessage();
-        });
+                if (event.key == "Enter")
+                    this.sendMessage();
+            });
         // шаблон сообщений
         this.messageTemp = Handlebars.compile(this.message_template);
         // шаблон системных сообщений
@@ -38,6 +43,7 @@ class Chat {
         });
     }
 
+     // Добавление текущего пользователя в юзербар по шаблону
     addCurrent() {
 
         const newUser = document.createElement('div');
@@ -57,7 +63,6 @@ class Chat {
             }, false)
         });
         this.currentuser.addEventListener('drop', (e) => {
-            console.log(e);
             let file = e.dataTransfer.files[0];
             if (file) {
                 if (file.size > 300 * 1024) {
@@ -68,7 +73,8 @@ class Chat {
             }
         }, false);
     }
-
+    
+    // Добавление нового пользователя в юзербар по шаблону
     addUser(user) {
         const newUser = document.createElement('div');
         this.userbar.append(newUser);
@@ -77,17 +83,17 @@ class Chat {
         });
     }
 
+    // Удаление пользователя в из юзербара
     delUser(user) {
-        console.log('remove', user);
         var element = this.userbar.querySelector("div[data-user='" + user + "']");
         if (element)
             element.remove();
     }
 
+
+    // Обработка входящего сообщения
     handleMessage(data) {
         let {type, message, user} = data;
-        console.log('Recieved type:', type);
-        console.log('Recieved user:', user);
         var content;
         var system = true;
         var time = new Date();
@@ -166,8 +172,13 @@ class Chat {
             message: '',
             type: 'login'
         };
-        this.socket.sendSock(JSON.stringify(data));
-        this.addCurrent();
+        try {
+            this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+            console.log("Error", e.message);
+        } finally {
+            this.addCurrent();
+        }
     }
 
     // пользователь вышел из чата
@@ -177,10 +188,15 @@ class Chat {
             message: '',
             type: 'logout'
         };
-        this.socket.sendSock(JSON.stringify(data));
-        this.usernick = {};
-        this.currentuser = this.userbar.firstElementChild;
-        this.currentuser.remove();
+        try {
+            await this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+              console.log("Error", e.message);
+        } finally {
+            this.usernick = {};
+            this.currentuser = this.userbar.firstElementChild;
+            this.currentuser.remove();
+        }
     }
 
     // отправить сообщение на сервер
@@ -190,8 +206,13 @@ class Chat {
             message: this.textinput.value,
             type: 'message'
         };
-        this.socket.sendSock(JSON.stringify(data));
-        this.textinput.value = '';
+         try {
+             await this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+             console.log("Error", e.message);
+        } finally {
+            this.textinput.value = '';
+        }
     }
 
     // сохранить аватар на сервер
@@ -202,24 +223,30 @@ class Chat {
             message: '',
             type: 'avatar'
         };
-        this.socket.sendSock(JSON.stringify(data));
+        try {
+           await this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+              console.log("Error", e.message);
+        } 
     }
 
     // запросить аватары на сервере
     async getAvatars() {
-        console.log('usernick: ', this.usernick)
         var data = {
             user: this.usernick,
             message: '',
             type: 'getavatars'
         };
-        this.socket.sendSock(JSON.stringify(data));
+        try {
+           await this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+             console.log("Error", e.message);
+        } 
     }
 
     // обновить аватар у пользователя в чате
     async updateAvatar(user) {
         var elements = document.querySelectorAll("img[data-user='" + user.usernick + "']")
-        // console.log(elements);
         for (let i = 0; i < elements.length; i++) {
             elements[i].src = user.avatar;
         }
