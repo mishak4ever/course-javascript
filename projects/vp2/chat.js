@@ -1,9 +1,10 @@
 class Chat {
     constructor() {
         this.chatblock = {};
-        this.usernick = {};
-        this.username = {};
+        this.usernick = "";
+        this.username = "";
         this.userbar = {};
+        this.authorbar = {};
         this.currentuser = {};
         this.textinput = {};
         this.sendbtn = {};
@@ -20,14 +21,16 @@ class Chat {
                 this.handleMessage(data)
             });
         } catch (e) {
-            alert( "Ошибка подключения к серверу " + e ); 
+            alert("Ошибка подключения к серверу " + e);
         }
 
         this.sendbtn.addEventListener('click', () => this.sendMessage());
         this.textinput.addEventListener('keydown', (event) => {
-                if (event.key == "Enter")
-                    this.sendMessage();
-            });
+            if (event.key == "Enter")
+                this.sendMessage();
+        });
+        // очищаем юзербар
+        this.userbar.innerHTML = "";
         // шаблон сообщений
         this.messageTemp = Handlebars.compile(this.message_template);
         // шаблон системных сообщений
@@ -35,23 +38,24 @@ class Chat {
         // шаблон пользователя в юзербаре
         this.userTemp = Handlebars.compile(this.user_template);
         this.fileReader = new FileReader();
-        // Добавить текущего пользователя в юзербар
-        this.addCurrent();
+        // Добавить текущего пользователя в юзербар (на случай если перезагрузили страницу)
         // обновить аватары пользователей при обновлении страницы
         window.addEventListener("load", () => {
-            this.getAvatars();
+            if (chat.usernick !== "") {
+                this.addCurrent();
+                this.who();
+            }
         });
     }
 
-     // Добавление текущего пользователя в юзербар по шаблону
+    // Добавление текущего пользователя в юзербар по шаблону
     addCurrent() {
-
         const newUser = document.createElement('div');
-        this.userbar.prepend(newUser);
+        this.authorbar.prepend(newUser);
         newUser.outerHTML = this.userTemp({
             usernick: this.usernick
         });
-        this.currentuser = this.userbar.firstElementChild;
+        this.currentuser = this.authorbar.firstElementChild;
         this.fileReader.addEventListener('load', () => {
             this.saveAvatar(this.fileReader.result);
         });
@@ -73,14 +77,18 @@ class Chat {
             }
         }, false);
     }
-    
+
     // Добавление нового пользователя в юзербар по шаблону
     addUser(user) {
-        const newUser = document.createElement('div');
-        this.userbar.append(newUser);
-        newUser.outerHTML = this.userTemp({
-            usernick: user
-        });
+        var element = this.userbar.querySelectorAll("div[data-user='" + user + "']")
+        console.log(element);
+        if (element.length < 1) {
+            const newUser = document.createElement('div');
+            this.userbar.append(newUser);
+            newUser.outerHTML = this.userTemp({
+                usernick: user
+            });
+        }
     }
 
     // Удаление пользователя в из юзербара
@@ -93,7 +101,6 @@ class Chat {
 
     // Обработка входящего сообщения
     handleMessage(data) {
-        let {type, message, user} = data;
         var content;
         var system = true;
         var time = new Date();
@@ -101,11 +108,10 @@ class Chat {
         // определяем тип полученного сообщения
         switch (data.type) {
             case 'login':
-                content =
-                    {
-                        time: time,
-                        message: `Пользователь с ником: ${data.user} присоединился к чату`,
-                    };
+                content = {
+                    time: time,
+                    message: `Пользователь с ником: ${data.user} присоединился к чату`,
+                };
                 // Добавляем пользователя в юзербар
                 if (this.usernick != data.user)
                     this.addUser(data.user);
@@ -117,22 +123,23 @@ class Chat {
                     });
                 break;
             case 'logout':
-                content =
-                    {
-                        time: time,
-                        message: `Пользователь с ником: ${data.user} покинул чат`,
-                    };
+                content = {
+                    time: time,
+                    message: `Пользователь с ником: ${data.user} покинул чат`,
+                };
                 // Удаляем вышедшего из юзербара
                 if ((this.usernick != {}) && (this.usernick != data.user))
                     this.delUser(data.user);
                 break;
-            case 'update_avatars':
-                // обновляем все аватары в чате
-                for (var usernick in data.avatars) {
-                    this.updateAvatar({
-                        usernick: usernick,
-                        avatar: data.avatars[usernick],
-                    });
+            case 'im_in_chat':
+                // обновляем пользователя в чате
+                if (this.usernick != data.user) {
+                    this.addUser(data.user);
+                    if (data.avatar)
+                        this.updateAvatar({
+                            usernick: data.user,
+                            avatar: data.avatar,
+                        });
                 }
                 break;
             case 'avatar':
@@ -140,6 +147,10 @@ class Chat {
                     usernick: data.user,
                     avatar: data.avatar,
                 });
+                break;
+            case 'who':
+                if (this.usernick != data.user)
+                    this.im_in_chat();
                 break;
             case'message':
                 system = false;
@@ -167,6 +178,7 @@ class Chat {
 
     // пользователь залогинился в чат
     async open() {
+        // console.log("send open", this.usernick);
         var data = {
             user: this.usernick,
             message: '',
@@ -178,6 +190,39 @@ class Chat {
             console.log("Error", e.message);
         } finally {
             this.addCurrent();
+        }
+        // очищаем юзербар
+        this.userbar.innerHTML = "";
+        this.who();
+    }
+
+    // спрашиваем кто в чате
+    async who() {
+        // console.log("send who", this.usernick);
+        var data = {
+            user: this.usernick,
+            message: '',
+            type: 'who'
+        };
+        try {
+            this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+            console.log("Error", e.message);
+        }
+    }
+
+    // я в чате
+    async im_in_chat() {
+        // console.log("send im_in_chat", this.usernick);
+        var data = {
+            user: this.usernick,
+            message: '',
+            type: 'im_in_chat'
+        };
+        try {
+            this.socket.sendSock(JSON.stringify(data));
+        } catch (e) {
+            console.log("Error", e.message);
         }
     }
 
@@ -191,10 +236,11 @@ class Chat {
         try {
             await this.socket.sendSock(JSON.stringify(data));
         } catch (e) {
-              console.log("Error", e.message);
+            console.log("Error", e.message);
         } finally {
-            this.usernick = {};
-            this.currentuser = this.userbar.firstElementChild;
+            this.username = "";
+            this.usernick = "";
+            this.currentuser = this.authorbar.firstElementChild;
             this.currentuser.remove();
         }
     }
@@ -206,10 +252,10 @@ class Chat {
             message: this.textinput.value,
             type: 'message'
         };
-         try {
-             await this.socket.sendSock(JSON.stringify(data));
+        try {
+            await this.socket.sendSock(JSON.stringify(data));
         } catch (e) {
-             console.log("Error", e.message);
+            console.log("Error", e.message);
         } finally {
             this.textinput.value = '';
         }
@@ -224,24 +270,10 @@ class Chat {
             type: 'avatar'
         };
         try {
-           await this.socket.sendSock(JSON.stringify(data));
+            await this.socket.sendSock(JSON.stringify(data));
         } catch (e) {
-              console.log("Error", e.message);
-        } 
-    }
-
-    // запросить аватары на сервере
-    async getAvatars() {
-        var data = {
-            user: this.usernick,
-            message: '',
-            type: 'getavatars'
-        };
-        try {
-           await this.socket.sendSock(JSON.stringify(data));
-        } catch (e) {
-             console.log("Error", e.message);
-        } 
+            console.log("Error", e.message);
+        }
     }
 
     // обновить аватар у пользователя в чате
